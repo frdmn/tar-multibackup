@@ -102,7 +102,7 @@ for ((i=0; i < ${#folders_to_backup[@]}; i++)); do
     else
       # Start backup
       info "Starting backup \"${absolute_backup_destination}/${timestamp}.tar.gz\""
-      tar czf ${absolute_backup_destination}/${timestamp}.tar.gz ${folders_to_backup[$i]}
+      tar czf ${absolute_backup_destination}/${timestamp}.tar.gz -P ${folders_to_backup[$i]}
       if [ $? -eq 0 ]; then
         success "Backup \"${absolute_backup_destination}/${timestamp}.tar.gz\" successfully completed!"
       else
