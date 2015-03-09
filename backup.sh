@@ -6,34 +6,7 @@
 # Configuration
 ###
 
-# Timestamp format, used in the backup target filename
-timestamp=$(date +%Y%m%d)
-
-# Destination where you want to store your backups
-backup_destination="/var/backups/chewbacca.yeahwh.at/liveconfig"
-
-# Folders to backup
-folders_to_backup=(
-  '/etc'
-  '/var/mail'
-  '/var/www'
-  '/var/lib/mysql'
-  '/var/spool/cron'
-  '/var/lib/liveconfig'
-)
-
-# How long to you want to keep your backups (in days)
-backup_retention="+7"
-
-# Commands that are executed before the backup started
-pre_commands=(
-  "service liveconfig stop"
-)
-
-# Commands that are executed after the backup is completed
-post_commands=(
-  "service liveconfig start"
-)
+. ${HOME}/.multibackup.conf
 
 ###
 # Functions
