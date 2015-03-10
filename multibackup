@@ -68,12 +68,11 @@ else
 fi
 
 # Iterate through tar_excludes to create a "--exclude=XXX" combination string
-tar_exclude_string=""
-
-if [ "${#tar_excludes[@]}" -ne 0 ]; then
+tar_exclude_parameters=()
+if [[ "${#tar_excludes[@]}" -ne 0 ]]; then
   # Run each pre command
-  for ((i=0; i < "${#tar_excludes[@]}"; i++)); do
-    tar_exclude_string="--exclude=${tar_excludes[$i]} ${tar_exclude_string}"
+  for parameter in "${tar_excludes[@]}"; do
+    tar_exclude_parameters+=( "--exclude=${parameter}" )
   done
 fi
 
@@ -83,17 +82,16 @@ current_task=1
 total_tasks="${#pre_commands[@]}"
 
 # Iterate through pre_commnads
-if [ "${#pre_commands[@]}" -ne 0 ]; then
+if [[ "${#pre_commands[@]}" -ne 0 ]]; then
   info "Found pre commands..."
   # Run each pre command
-  for ((i=0; i < "${#pre_commands[@]}"; i++)); do
-    info "Running \"${pre_commands[$i]}\":"
-    ${pre_commands[$i]}
-    # Check return value to see if command ran successfully
-    if [ $? -eq 0 ]; then
-      success "Pre command \"${pre_commands[$i]}\" successfully completed!"
+  for pre_command in "${pre_commands[@]}"; do
+    info "Running \"${pre_command}\":"
+    # Check if pre command ran successfully
+    if [[ ${pre_command} ]]; then
+      success "Pre command \"${pre_command}\" successfully completed!"
     else
-      error "Pre command \"${pre_commands[$i]}\" failed..."
+      error "Pre command \"${pre_command}\" failed..."
     fi
   done
 fi
@@ -104,14 +102,14 @@ current_task=1
 total_tasks="${#folders_to_backup[@]}"
 
 # Iterate through "$folders_to_backup"
-for ((i=0; i < "${#folders_to_backup[@]}"; i++)); do
+for folder_to_backup in "${folders_to_backup[@]}"; do
   # Check if folder exists
-  debug "Check if source folder \"${folders_to_backup[$i]}\" exists..."
-  if [[ -d "${folders_to_backup[$i]}" ]]; then
+  debug "Check if source folder \"${folder_to_backup}\" exists..."
+  if [[ -d "${folder_to_backup}" ]]; then
     # Exist => continue
-    info "Source folder \"${folders_to_backup[$i]}\" exists!"
+    info "Source folder \"${folder_to_backup}\" exists!"
     # Make sure backup destination exists
-    backup_basename=$(replace_slash_with_dash "${folders_to_backup[$i]}")
+    backup_basename=$(replace_slash_with_dash "${folder_to_backup}")
     absolute_backup_destination=$(strip_duplicate_slashes_in_path "${backup_destination}/${backup_basename}")
     if [[ ! -d "${absolute_backup_destination}" ]]; then
       info "Backup destination folder \"${absolute_backup_destination}\" doesn't exist. Creating..."
@@ -124,8 +122,8 @@ for ((i=0; i < "${#folders_to_backup[@]}"; i++)); do
     else
       # Start backup
       info "Starting backup \"${absolute_backup_destination}/${timestamp}.tar.gz\""
-      tar czf "${absolute_backup_destination}/${timestamp}.tar.gz" -P "${folders_to_backup[$i]}" "${tar_exclude_string}"
-      if [ $? -eq 0 ]; then
+      tar czf "${absolute_backup_destination}/${timestamp}.tar.gz" -P "${folder_to_backup}" "${tar_exclude_parameters[@]}"
+      if [[ $? -eq 0 ]]; then
         success "Backup \"${absolute_backup_destination}/${timestamp}.tar.gz\" successfully completed!"
       else
         error "Backup \"${absolute_backup_destination}/${timestamp}.tar.gz\" failed..."
@@ -133,12 +131,12 @@ for ((i=0; i < "${#folders_to_backup[@]}"; i++)); do
     fi
 
     # Remove old backups
-    if [ ! -z "${backup_retention}" ]; then
+    if [[ ! -z "${backup_retention}" ]]; then
       find "${absolute_backup_destination}/" -maxdepth 1 -mtime "${backup_retention}" -type d -exec rm -rf {} \;
     fi
   else
     # Doesn't exist => skip
-    error "Folder \"${folders_to_backup[$i]}\" doesn't exist. Skipping..."
+    error "Folder \"${folder_to_backup}\" doesn't exist. Skipping..."
   fi
   # Increment $current_task variable
   current_task=$((current_task+1))
@@ -150,19 +148,19 @@ current_task=1
 total_tasks="${#post_commands[@]}"
 
 # Iterate through post_commnads
-if [ "${#post_commands[@]}" -ne 0 ]; then
+if [[ "${#post_commands[@]}" -ne 0 ]]; then
   info "Found post commands..."
   # Run each post command
-  for ((i=0; i < "${#post_commands[@]}"; i++)); do
-    info "Running \"${post_commands[$i]}\":"
-    ${post_commands[$i]}
-    # Check return value to see if command ran successfully
-    if [ $? -eq 0 ]; then
-      success "Pre command \"${post_commands[$i]}\" successfully completed!"
+  for post_command in "${post_commands[@]}"; do
+    info "Running \"${post_command}\":"
+    # Check if post command ran successfully
+    if [[ ${post_command} ]]; then
+      success "Post command \"${post_command}\" successfully completed!"
     else
-      error "Pre command \"${post_commands[$i]}\" failed..."
+      error "Post command \"${post_command}\" failed..."
     fi
   done
 fi
 
+# Return exit code
 exit 0
