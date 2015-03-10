@@ -34,12 +34,17 @@ In the example below you can find a `multibackup` configuration file to backup a
 
     # Folders to backup
     folders_to_backup=(
-      '/etc'
-      '/var/mail'
-      '/var/www'
-      '/var/lib/mysql'
-      '/var/spool/cron'
-      '/var/lib/liveconfig'
+      "/etc"
+      "/var/mail"
+      "/var/www"
+      "/var/lib/mysql"
+      "/var/spool/cron"
+      "/var/lib/liveconfig"
+    )
+
+    # Files and folders that are excluded in the tar command
+    tar_excludes=(
+      "nginx-php-fcgi.sock"
     )
 
     # How long to you want to keep your backups (in days)
