@@ -22,24 +22,28 @@ color_reset=`tput sgr0`
 
 # Logging prefix helper
 prefix(){
-  echo "[${current_action}] [${current_task}/${total_tasks}]"
+  # Check if placeholders variables are given
+  if [[ -n ${current_action} && -n ${current_task} && -n ${total_tasks} ]]; then
+    # Return prefix
+    echo "[${current_action}] [${current_task}/${total_tasks}] "
+  fi
 }
 
 # Logging helpers
 debug() {
-  echo "$(prefix) [DEBUG] $@" 1>&2
+  echo "$(prefix)[DEBUG] $@ " 1>&2
 }
 
 success() {
-  echo "$(prefix) ${color_green}[SUCCESS]${color_reset} $@" 1>&2
+  echo "$(prefix)${color_green}[SUCCESS]${color_reset} $@" 1>&2
 }
 
 info() {
-  echo "$(prefix) ${color_yellow}[INFO]${color_reset} $@" 1>&2
+  echo "$(prefix)${color_yellow}[INFO]${color_reset} $@" 1>&2
 }
 
 error() {
-  echo "$(prefix) ${color_red}[ERROR]${color_reset} $@" 1>&2
+  echo "$(prefix)${color_red}[ERROR]${color_reset} $@" 1>&2
 }
 
 # Strip all redundant slashes in file paths
