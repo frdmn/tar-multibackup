@@ -1,13 +1,13 @@
 #!/bin/bash
 
-[ -n "$DEBUG" ] && set -x
+[ -n "${DEBUG}" ] && set -x
 
 ###
 # Configuration
 ###
 
 # Use "~/.multibackup" as default config, if $CONFIG is not specified
-CONFIG=${CONFIG:-${HOME}/.multibackup.conf}
+CONFIG="${CONFIG:-${HOME}/.multibackup.conf}"
 
 ###
 # Functions
@@ -19,11 +19,10 @@ color_yellow=`tput setaf 3`
 color_green=`tput setaf 2`
 color_reset=`tput sgr0`
 
-
 # Logging prefix helper
 prefix(){
   # Check if placeholders variables are given
-  if [[ -n ${current_action} && -n ${current_task} && -n ${total_tasks} ]]; then
+  if [[ -n "${current_action}" && -n "${current_task}" && -n "${total_tasks}" ]]; then
     # Return prefix
     echo "[${current_action}] [${current_task}/${total_tasks}] "
   fi
@@ -61,8 +60,8 @@ replace_slash_with_dash(){
 ###
 
 # Check for config file then read and source
-if [ -f ${CONFIG} ]; then
-  . ${CONFIG}
+if [ -f "${CONFIG}" ]; then
+  . "${CONFIG}"
 else
   error "Couldn't find configuration file \"${CONFIG}\""
   exit 1
@@ -70,9 +69,9 @@ fi
 
 # Iterate through tar_excludes to create a "--exclude=XXX" combination string
 tar_exclude_string=""
-if [ ${#tar_excludes[@]} -ne 0 ]; then
+if [ "${#tar_excludes[@]}" -ne 0 ]; then
   # Run each pre command
-  for ((i=0; i < ${#tar_excludes[@]}; i++)); do
+  for ((i=0; i < "${#tar_excludes[@]}"; i++)); do
     tar_exclude_string="--exclude=${tar_excludes[$i]} ${tar_exclude_string}"
   done
 fi
@@ -80,15 +79,15 @@ fi
 # Set prefix variables for pre-commands
 current_action="pre-command"
 current_task=1
-total_tasks=${#pre_commands[@]}
+total_tasks="${#pre_commands[@]}"
 
 # Iterate through pre_commnads
-if [ ${#pre_commands[@]} -ne 0 ]; then
+if [ "${#pre_commands[@]}" -ne 0 ]; then
   info "Found pre commands..."
   # Run each pre command
-  for ((i=0; i < ${#pre_commands[@]}; i++)); do
+  for ((i=0; i < "${#pre_commands[@]}"; i++)); do
     info "Running \"${pre_commands[$i]}\":"
-    ${pre_commands[$i]}
+    "${pre_commands[$i]}"
     # Check return value to see if command ran successfully
     if [ $? -eq 0 ]; then
       success "Pre command \"${pre_commands[$i]}\" successfully completed!"
@@ -101,30 +100,30 @@ fi
 # Set prefix variables for backup
 current_action="backup"
 current_task=1
-total_tasks=${#folders_to_backup[@]}
+total_tasks="${#folders_to_backup[@]}"
 
 # Iterate through "$folders_to_backup"
-for ((i=0; i < ${#folders_to_backup[@]}; i++)); do
+for ((i=0; i < "${#folders_to_backup[@]}"; i++)); do
   # Check if folder exists
   debug "Check if source folder \"${folders_to_backup[$i]}\" exists..."
-  if [[ -d ${folders_to_backup[$i]} ]]; then
+  if [[ -d "${folders_to_backup[$i]}" ]]; then
     # Exist => continue
     info "Source folder \"${folders_to_backup[$i]}\" exists!"
     # Make sure backup destination exists
-    backup_basename=$(replace_slash_with_dash ${folders_to_backup[$i]})
-    absolute_backup_destination=$(strip_duplicate_slashes_in_path ${backup_destination}/${backup_basename})
+    backup_basename=$(replace_slash_with_dash "${folders_to_backup[$i]}")
+    absolute_backup_destination=$(strip_duplicate_slashes_in_path "${backup_destination}/${backup_basename}")
     if [[ ! -d "${absolute_backup_destination}" ]]; then
       info "Backup destination folder \"${absolute_backup_destination}\" doesn't exist. Creating..."
-      mkdir -p ${absolute_backup_destination}
+      mkdir -p "${absolute_backup_destination}"
     fi
 
     # Check if backup already exists (to make sure)
-    if [[ -f ${absolute_backup_destination}/${timestamp}.tar.gz ]]; then
+    if [[ -f "${absolute_backup_destination}/${timestamp}.tar.gz" ]]; then
       error "Backup \"${absolute_backup_destination}/${timestamp}.tar.gz\" already exists. Skipping..."
     else
       # Start backup
       info "Starting backup \"${absolute_backup_destination}/${timestamp}.tar.gz\""
-      tar czf ${absolute_backup_destination}/${timestamp}.tar.gz -P ${folders_to_backup[$i]} ${tar_exclude_string}
+      tar czf "${absolute_backup_destination}/${timestamp}.tar.gz" -P "${folders_to_backup[$i]}" "${tar_exclude_string}"
       if [ $? -eq 0 ]; then
         success "Backup \"${absolute_backup_destination}/${timestamp}.tar.gz\" successfully completed!"
       else
@@ -134,7 +133,7 @@ for ((i=0; i < ${#folders_to_backup[@]}; i++)); do
 
     # Remove old backups
     if [ ! -z "${backup_retention}" ]; then
-      find ${absolute_backup_destination}/ -maxdepth 1 -mtime ${backup_retention} -type d -exec rm -rf {} \;
+      find "${absolute_backup_destination}/" -maxdepth 1 -mtime "${backup_retention}" -type d -exec rm -rf {} \;
     fi
   else
     # Doesn't exist => skip
@@ -147,15 +146,15 @@ done
 # Set prefix variables for pre-commands
 current_action="post-command"
 current_task=1
-total_tasks=${#post_commands[@]}
+total_tasks="${#post_commands[@]}"
 
 # Iterate through post_commnads
-if [ ${#post_commands[@]} -ne 0 ]; then
+if [ "${#post_commands[@]}" -ne 0 ]; then
   info "Found post commands..."
   # Run each post command
-  for ((i=0; i < ${#post_commands[@]}; i++)); do
+  for ((i=0; i < "${#post_commands[@]}"; i++)); do
     info "Running \"${post_commands[$i]}\":"
-    ${post_commands[$i]}
+    "${post_commands[$i]}"
     # Check return value to see if command ran successfully
     if [ $? -eq 0 ]; then
       success "Pre command \"${post_commands[$i]}\" successfully completed!"
