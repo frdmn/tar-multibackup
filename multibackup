@@ -6,7 +6,8 @@
 # Configuration
 ###
 
-. ${HOME}/.multibackup.conf
+# Use "~/.multibackup" as default config, if $CONFIG is not specified
+CONFIG=${CONFIG:-${HOME}/.multibackup.conf}
 
 ###
 # Functions
@@ -54,6 +55,14 @@ replace_slash_with_dash(){
 ###
 # Logic
 ###
+
+# Check for config file then read and source
+if [ -f ${CONFIG} ]; then
+  . ${CONFIG}
+else
+  error "Couldn't find configuration file \"${CONFIG}\""
+  exit 1
+fi
 
 # Iterate through tar_excludes to create a "--exclude=XXX" combination string
 tar_exclude_string=""
