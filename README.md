@@ -2,7 +2,7 @@ tar-multibackup
 ===============
 
 
-Bash script to backup multiple folders and clean up old backups based on a configurable retention time.
+Bash script to backup multiple folders and to clean up old backups based on a retention time. Features configurable post/pre-commands, tar excludes as well as backup retentions.
 
 ### Installation
 
@@ -76,7 +76,7 @@ In the example below you can find a `multibackup` configuration file to backup a
 
 To make sure the backup is executed automatically and recurring, we're going to add a simple cronjob:
 
-`vi /etc/cron.d/backup-liveconfig
+`vi /etc/cron.d/backup-liveconfig`
 
     #
     # cronjob to backup LiveConfig, daily at 5:00 am
