@@ -55,6 +55,15 @@ replace_slash_with_dash(){
 # Logic
 ###
 
+# Iterate through tar_excludes to create a "--exclude=XXX" combination string
+tar_exclude_string=""
+if [ ${#tar_excludes[@]} -ne 0 ]; then
+  # Run each pre command
+  for ((i=0; i < ${#tar_excludes[@]}; i++)); do
+    tar_exclude_string="--exclude=${tar_excludes[$i]} ${tar_exclude_string}"
+  done
+fi
+
 # Set prefix variables for pre-commands
 current_action="pre-command"
 current_task=1
@@ -102,7 +111,7 @@ for ((i=0; i < ${#folders_to_backup[@]}; i++)); do
     else
       # Start backup
       info "Starting backup \"${absolute_backup_destination}/${timestamp}.tar.gz\""
-      tar czf ${absolute_backup_destination}/${timestamp}.tar.gz -P ${folders_to_backup[$i]}
+      tar czf ${absolute_backup_destination}/${timestamp}.tar.gz -P ${folders_to_backup[$i]} ${tar_exclude_string}
       if [ $? -eq 0 ]; then
         success "Backup \"${absolute_backup_destination}/${timestamp}.tar.gz\" successfully completed!"
       else
