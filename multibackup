@@ -1,6 +1,6 @@
 #!/bin/bash
 
-[ -n "${DEBUG}" ] && set -x
+[[ -n "${DEBUG}" ]] && set -x
 
 ###
 # Configuration
@@ -14,10 +14,10 @@ CONFIG="${CONFIG:-${HOME}/.multibackup.conf}"
 ###
 
 # Color helpers
-color_red=`tput setaf 1`
-color_yellow=`tput setaf 3`
-color_green=`tput setaf 2`
-color_reset=`tput sgr0`
+color_red=$(tput setaf 1)
+color_yellow=$(tput setaf 3)
+color_green=$(tput setaf 2)
+color_reset=$(tput sgr0)
 
 # Logging prefix helper
 prefix(){
@@ -60,7 +60,7 @@ replace_slash_with_dash(){
 ###
 
 # Check for config file then read and source
-if [ -f "${CONFIG}" ]; then
+if [[ -f "${CONFIG}" ]]; then
   . "${CONFIG}"
 else
   error "Couldn't find configuration file \"${CONFIG}\""
@@ -69,6 +69,7 @@ fi
 
 # Iterate through tar_excludes to create a "--exclude=XXX" combination string
 tar_exclude_string=""
+
 if [ "${#tar_excludes[@]}" -ne 0 ]; then
   # Run each pre command
   for ((i=0; i < "${#tar_excludes[@]}"; i++)); do
@@ -87,7 +88,7 @@ if [ "${#pre_commands[@]}" -ne 0 ]; then
   # Run each pre command
   for ((i=0; i < "${#pre_commands[@]}"; i++)); do
     info "Running \"${pre_commands[$i]}\":"
-    "${pre_commands[$i]}"
+    ${pre_commands[$i]}
     # Check return value to see if command ran successfully
     if [ $? -eq 0 ]; then
       success "Pre command \"${pre_commands[$i]}\" successfully completed!"
@@ -154,7 +155,7 @@ if [ "${#post_commands[@]}" -ne 0 ]; then
   # Run each post command
   for ((i=0; i < "${#post_commands[@]}"; i++)); do
     info "Running \"${post_commands[$i]}\":"
-    "${post_commands[$i]}"
+    ${post_commands[$i]}
     # Check return value to see if command ran successfully
     if [ $? -eq 0 ]; then
       success "Pre command \"${post_commands[$i]}\" successfully completed!"
@@ -163,3 +164,5 @@ if [ "${#post_commands[@]}" -ne 0 ]; then
     fi
   done
 fi
+
+exit 0
