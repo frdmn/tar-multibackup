@@ -20,6 +20,15 @@ Bash script to backup multiple folders and clean up old backups based on a confi
 * `pre_commands` = Array of commands that are executed before the backup starts (stop specific service)
 * `post_commands` = Array of commands that are executed after the backup finished (start specific service)
 
+### Environment configurations
+
+* `DEBUG` = if set to "true", `set -x` will be set
+* `CONFIG` = if you want to use a different configuration file than the 
+
+Example: 
+
+    CONFIG=/tmp/testbackup.conf DEBUG=true multibackup
+
 #### Example configuration 
 
 In the example below you can find a `multibackup` configuration file to backup a productional [LiveConfig](http://www.liveconfig.com/) instance.
