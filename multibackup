@@ -52,7 +52,10 @@ strip_duplicate_slashes_in_path(){
 
 # Replace all slashes with dashes
 replace_slash_with_dash(){
-    echo "${@}" | sed 's#/#-#g' | sed 's/^-//g' | sed 's/-$//g'
+    input="${@////-}"     # replace all slashes with dashes
+    input="${input/#-/}"  # remove possible starting dash
+    output="${input/%-/}" # as well as possible trailing dash
+    echo "${output}"
 }
 
 ###
