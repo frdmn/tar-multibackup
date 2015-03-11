@@ -47,7 +47,14 @@ error() {
 
 # Strip all redundant slashes in file paths
 strip_duplicate_slashes_in_path(){
-  echo "${@}" | sed 's#//*#/#g'
+  # Backup current shopt options
+  shoptBackup=$(shopt -p)
+  # Set extented globbing
+  shopt -s extglob
+  # Substitute input (turn multiple slashes into single one) and return
+  echo "${@//+(\/)//}"
+  # Restore shopt
+  eval "$oldShoptOptions" &> /dev/null
 }
 
 # Replace all slashes with dashes
