@@ -88,4 +88,4 @@ To make sure the backup is executed automatically and recurring, we're going to 
 1.0.0
 
 ### Lincense
-[WTFPL](LICENSE)
+[MIT](LICENSE)
