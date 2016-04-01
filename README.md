@@ -85,7 +85,7 @@ To make sure the backup is executed automatically and recurring, we're going to 
     0 5 * * *        root       /usr/local/bin/multibackup &>/dev/null
 
 ### Version
-1.0.0
+1.1.0
 
 ### Lincense
 [MIT](LICENSE)
