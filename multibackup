@@ -142,7 +142,7 @@ for folder_to_backup in "${folders_to_backup[@]}"; do
 
     # Remove old backups
     if [[ ! -z "${backup_retention}" ]]; then
-      find "${absolute_backup_destination}/" -maxdepth 1 -mtime "${backup_retention}" -type d -exec rm -rf {} \;
+      find "${absolute_backup_destination}/" -maxdepth 1 -mtime "${backup_retention}" -type f -exec rm -rf {} \;
     fi
   else
     # Doesn't exist => skip
