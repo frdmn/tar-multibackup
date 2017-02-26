@@ -97,8 +97,9 @@ if [[ "${#pre_commands[@]}" -ne 0 ]]; then
   # Run each pre command
   for pre_command in "${pre_commands[@]}"; do
     info "Running \"${pre_command}\":"
+    eval "${pre_command}"
     # Check if pre command ran successfully
-    if [[ ${pre_command} ]]; then
+    if [[ $? -eq 0 ]]; then
       success "Pre command \"${pre_command}\" successfully completed!"
     else
       error "Pre command \"${pre_command}\" failed..."
@@ -163,8 +164,9 @@ if [[ "${#post_commands[@]}" -ne 0 ]]; then
   # Run each post command
   for post_command in "${post_commands[@]}"; do
     info "Running \"${post_command}\":"
+    eval "${post_command}"
     # Check if post command ran successfully
-    if [[ ${post_command} ]]; then
+    if [[ $? -eq 0 ]]; then
       success "Post command \"${post_command}\" successfully completed!"
     else
       error "Post command \"${post_command}\" failed..."
